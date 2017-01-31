@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 # vim: set tabstop 8 expandtab:
 
-# This is part of eos-workaround/no-glitch-sound
+# This is part of eos-loki-no-glitch-sound
 # Copyright (c) 2017 JEON Myoungjin <jeongoon@gmail.com>
 
 use 5.012;
@@ -28,12 +28,12 @@ BEGIN {
     push @BaseDir_, File::Spec->splitdir( $dir );
 
     require lib;
-    lib->import( map { Cwd::abs_path( File::Spec->catfile ( @BaseDir_, @$_ ) ) }
+    lib->import( map { Cwd::abs_path( File::Spec->catfile( @BaseDir_, @$_ ) ) }
                  ( [ 'lib' ], [ ( '..' ) x (1), 'myPerl' ] ) );
 }
 
 use FreeDE::App
-  ( -AppName => 'no-glitch-sound',
+  ( -AppName => 'gentle-sound-demo',
     -Debug   => true,
     -Verbose => true,
     qw(fs app :msg)
@@ -95,6 +95,8 @@ dmsg "fork() for player is succeed.";
 dmsg "installing signal handlers...";
 
 #$sigtrap::Verbose = 1;
+# we should install after 2nd fork() for better (or correct) handling signal.
+# otherwise. most of signal handled by handleSigQuit(untrapped)
 require sigtrap;
 sigtrap->import( handler => \&handleSigInt => qw(INT HUP) );
 sigtrap->import( handler => \&handleSigQuit => 'untrapped' );
